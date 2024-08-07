@@ -10,10 +10,21 @@ char nome[4];
 char mina[6][6], interface[6][6];
 bool fim=false;
 
+const string PADRAO = "\033[0m";
+const string R = "\033[31m";
+const string B = "\033[34m";
+const string G = "\033[32m";
+const string M = "\033[35m";
+const string C = "\033[36m";
+const string Y = "\033[33m";
+const string GBG = "\033[42m";
+const string CBG = "\033[46m";
+const string YBG = "\033[43m";
+
 void intro(){ //Texto de start do jogo
-    cout << "Bem vindo à caça ao tesouro!" << endl;
+    cout << Y << "Bem vindo à caça ao tesouro!" << endl;
     cout << "Aqui, os jogadores devem encontrar diamantes em uma mina!" << endl;
-    cout << " " << endl;
+    cout << " " << endl << PADRAO;
 }
 
 void preenchermatrizes(){ //inicializa as matrizes da interface e do "back end" do jogo
@@ -39,45 +50,50 @@ void preenchermatrizes(){ //inicializa as matrizes da interface e do "back end" 
 
 void nomejogadores(){ //Guarda as inicias dos jogadores invez dos nomes, para conveniencia
     for(int i=0; i<qntplayers; i++){
-        cout << "Inserir inicial do jogador " << i+1 << " : " << endl;
+        cout << C << "Inserir inicial do jogador " << i+1 << " : " << endl << PADRAO;
         cin >> nome[i];
     }
 }
 
 void qntjogadores(){ //Determina a quantidade de jogadores que participarao do jogo
-    cout << "Quantas pessoas vao jogar?" << endl;
+    cout << " " << endl;
+    cout << M << "Quantas pessoas vao jogar?" << endl;
     cin >> qntplayers;
     while(qntplayers<2 || qntplayers>4){
         cout << "Valor invalido, o jogo deve ser jogado com 2 a 4 jogadores." << endl;
-        cout << "Quantas pessoas vao jogar?" << endl;
+        cout << "Quantas pessoas vao jogar?" << endl << PADRAO;
         cin >> qntplayers;
     }
 }
 
 void promptjogue(){ //Entrada de qual indice da matriz o jogador quer checar para diamantes
-    cout << "Qual casa vc deseja explorar?" << endl;
+    cout << " " << endl;
+    cout << Y << "Qual casa vc deseja explorar?" << endl << PADRAO;
 }
 
 void jogadas(int x, int dec, int uni){ //alterna os turnos entre os jogadores, checa a matriz do jogo e atualiza a matriz da interface
     int novosquilates=0;
+    int dec2, uni2;
     for(int i=0; i<qntplayers; i++){
         cout << "Vez do jogador " << nome[i] << endl;
         promptjogue();
-        cin >> dec >> uni;
+        cin >> dec2 >> uni2;
+        dec=dec2-1;
+        uni=uni2-1;
         interface[dec][uni]='0';
         if(mina[dec][uni]='D'){
            novosquilates=rand()%10+1;
            quilates[i]=novosquilates;
-           cout << "Você achou um diamante de " << novosquilates << " quilates!" << endl;
+           cout << G << "Você achou um diamante de " << novosquilates << " quilates!" << endl;
         }else if(mina[dec][uni]='+'){
             quilates[i]+=3;
             cout << "Você está no caminho certo e achou 3 quilates!" << endl;
         }else if(mina[dec][uni]='-'){
             quilates[i+1]-=5;
-            cout << "Você se escondeu e tirou 5 quilates de um oponente!" << endl;
+            cout << "Você se escondeu e tirou 5 quilates de um oponente!" << endl << PADRAO;
         }else if(mina[dec][uni]='O'){
             quilates[i]-=10;
-            cout << "Você caiu num tunel sem saída e perdeu 10 quilates!" << endl;
+            cout << R << "Você caiu num tunel sem saída e perdeu 10 quilates!" << endl << PADRAO;
         }
         for(int i=0; i<6; i++){
             for(int j=0; j<6; j++){
@@ -86,6 +102,11 @@ void jogadas(int x, int dec, int uni){ //alterna os turnos entre os jogadores, c
         putchar('\n');
         }
         turnos++;
+        for(int j=0; j<qntplayers; j++){
+        cout << " " << endl;
+        cout << B << "O Jogador " << nome[j] << " está com " << quilates[j] << " pontos." << endl << PADRAO;
+        cout << " " << endl;
+        }
     }
 }
 
@@ -96,9 +117,11 @@ void placar(){ //determina e printa o jogador com mais pontos, e escreve a pontu
             vencedor=i;
         }
     }
-    cout << "O jogador com mais pontos foi: " << nome[vencedor] << " com " << pmax << " pontos!" << endl;
+    cout << GBG << "O jogador com mais pontos foi: " << nome[vencedor] << " com " << pmax << " pontos!" << endl << PADRAO;
+    cout << " " << endl;
     for(int j=0; j<qntplayers; j++){
-        cout << "O Jogador " << j+1 << " com a inicial " << nome[j] << " teve " << quilates[j] << " pontos." << endl;
+        cout << CBG << "O Jogador " << j+1 << " com a inicial " << nome[j] << " teve " << quilates[j] << " pontos." << endl << PADRAO;
+        cout << " " << endl;
     }
 }
 
@@ -112,7 +135,6 @@ int main(){
             printf("%c ", mina[i][j]);
         }
         putchar('\n');
-    
     }*/
 
     intro();
@@ -126,7 +148,7 @@ int main(){
         }
         putchar('\n');
     }
-    while(turnos<=36/qntplayers){
+    while(turnos<36/qntplayers){
         jogadas(x, dec, uni);
     }
     fim=true;
