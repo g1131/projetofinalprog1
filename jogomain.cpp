@@ -4,13 +4,13 @@
 #include <cmath>
 using namespace std;
 
-int quilates[4]={0}, qntplayers=0;
-int vencedor=0, pmax=-7000, turnos=0;
+int quilates[4]={0}, qntplayers=0; //variáveis universais.
+int vencedor=0, pmax=-7000, turnos=0, totaldepontos=0;
 char nome[4];
 char mina[6][6], interface[6][6];
 bool fim=false;
 
-const string PADRAO = "\033[0m";
+const string PADRAO = "\033[0m";  //cores utilizadas nas strings de saída.
 const string R = "\033[31m";
 const string B = "\033[34m";
 const string G = "\033[32m";
@@ -51,6 +51,7 @@ void preenchermatrizes(){ //inicializa as matrizes da interface e do "back end" 
 void nomejogadores(){ //Guarda as inicias dos jogadores invez dos nomes, para conveniencia
     for(int i=0; i<qntplayers; i++){
         cout << C << "Inserir inicial do jogador " << i+1 << " : " << endl << PADRAO;
+        cout << R << "AVISO! Iniciais repitidas resultarão em erro." << endl << PADRAO;
         cin >> nome[i];
     }
 }
@@ -61,14 +62,14 @@ void qntjogadores(){ //Determina a quantidade de jogadores que participarao do j
     cin >> qntplayers;
     while(qntplayers<2 || qntplayers>4){
         cout << "Valor invalido, o jogo deve ser jogado com 2 a 4 jogadores." << endl;
-        cout << "Quantas pessoas vao jogar?" << endl << PADRAO;
+        cout << "Quantas pessoas vão jogar?" << endl << PADRAO;
         cin >> qntplayers;
     }
 }
 
 void promptjogue(){ //Entrada de qual indice da matriz o jogador quer checar para diamantes
     cout << " " << endl;
-    cout << Y << "Qual casa vc deseja explorar?" << endl << PADRAO;
+    cout << Y << "Qual casa você deseja explorar? Por favor insira um número de 1-6 para caida eixo (X e Y)" << endl << PADRAO;
 }
 
 void jogadas(int x, int dec, int uni){ //alterna os turnos entre os jogadores, checa a matriz do jogo e atualiza a matriz da interface
@@ -80,21 +81,27 @@ void jogadas(int x, int dec, int uni){ //alterna os turnos entre os jogadores, c
         cin >> dec2 >> uni2;
         dec=dec2-1;
         uni=uni2-1;
-        interface[dec][uni]='0';
+        interface[dec][uni]=nome[i];
         if(mina[dec][uni]='D'){
            novosquilates=rand()%10+1;
            quilates[i]=novosquilates;
            cout << G << "Você achou um diamante de " << novosquilates << " quilates!" << endl;
+           totaldepontos+=novosquilates;
         }else if(mina[dec][uni]='+'){
             quilates[i]+=3;
             cout << "Você está no caminho certo e achou 3 quilates!" << endl;
+            totaldepontos+=3;
         }else if(mina[dec][uni]='-'){
             quilates[i+1]-=5;
-            cout << "Você se escondeu e tirou 5 quilates de um oponente!" << endl << PADRAO;
+            quilates[i]+=5;
+            cout << "Você se escondeu e roubou 5 quilates de um oponente!" << endl << PADRAO;
+            totaldepontos+=5;
         }else if(mina[dec][uni]='O'){
             quilates[i]-=10;
             cout << R << "Você caiu num tunel sem saída e perdeu 10 quilates!" << endl << PADRAO;
+            totaldepontos-=10;
         }
+        cout << GBG;
         for(int i=0; i<6; i++){
             for(int j=0; j<6; j++){
                 printf("%c ", interface[i][j]);
@@ -152,7 +159,7 @@ int main(){
         jogadas(x, dec, uni);
     }
     fim=true;
-    while(fim=true){
+    while(fim==true){
         placar();
         break;
     }
