@@ -84,7 +84,7 @@ void jogadas(int x, int dec, int uni){ //alterna os turnos entre os jogadores, c
         interface[dec][uni]=nome[i];
         if(mina[dec][uni]='D'){
            novosquilates=rand()%10+1;
-           quilates[i]=novosquilates;
+           quilates[i]+=novosquilates;
            cout << G << "Você achou um diamante de " << novosquilates << " quilates!" << endl;
            totaldepontos+=novosquilates;
         }else if(mina[dec][uni]='+'){
@@ -110,6 +110,7 @@ void jogadas(int x, int dec, int uni){ //alterna os turnos entre os jogadores, c
         }
         turnos++;
         for(int j=0; j<qntplayers; j++){
+        cout << B;
         cout << " " << endl;
         cout << B << "O Jogador " << nome[j] << " está com " << quilates[j] << " pontos." << endl << PADRAO;
         cout << " " << endl;
@@ -155,7 +156,7 @@ int main(){
         }
         putchar('\n');
     }
-    while(turnos<36/qntplayers){
+    while(turnos<36){
         jogadas(x, dec, uni);
     }
     fim=true;
@@ -163,7 +164,6 @@ int main(){
         placar();
         break;
     }
-    
     
     return 0;
 }
